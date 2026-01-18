@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Special Gift 💖</title>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Quicksand', sans-serif;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(10deg); }
+    }
+    
+    @keyframes sparkle {
+      0% { opacity: 1; transform: scale(0); }
+      100% { opacity: 0; transform: scale(1.5); }
+    }
+    
+    @keyframes fadeOut {
+      from { opacity: 1; transform: scale(1); }
+      to { opacity: 0; transform: scale(0.9); }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-float {
+      animation: float 8s ease-in-out infinite;
+    }
+    
+    .animate-sparkle {
+      animation: sparkle 1s ease-out forwards;
+    }
+    
+    .fade-out {
+      animation: fadeOut 0.5s ease-out forwards;
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const FloatingBackground = () => {
+      const icons = ["💕", "🐱", "🌸", "🎀", "✨", "🌺", "💖", "🦋"];
+
+      return (
+        <div className="fixed inset-0 pointer-events-none overflow-hidden opacity-30 z-0">
+          {[...Array(20)].map((_, i) => {
+            const emoji = icons[i % icons.length];
+            const randomX = Math.random() * 100;
+            const randomY = Math.random() * 100;
+            const randomDuration = 4 + Math.random() * 4;
+            const randomDelay = Math.random() * 5;
+            
+            return (
+              <div
+                key={i}
+                className="absolute text-4xl text-pink-400 animate-float"
+                style={{
+                  left: `${randomX}%`,
+                  top: `${randomY}%`,
+                  animationDuration: `${randomDuration}s`,
+                  animationDelay: `${randomDelay}s`
+                }}
+              >
+                {emoji}
+              </div>
+            );
+          })}
+        </div>
+      );
+    };
+
+    const SparkleEffect = () => {
+      const [sparkles, setSparkles] = useState([]);
+
+      useEffect(() => {
+        const handleMouseMove = (e) => {
+          if (Math.random() > 0.9) {
+            const id = Date.now();
+            setSparkles((prev) => [...prev, { id, x: e.clientX, y: e.clientY }]);
+            setTimeout(() => {
+              setSparkles((prev) => prev.filter((s) => s.id !== id));
+            }, 1000);
+          }
+        };
+        window.addEventListener("mousemove", handleMouseMove);
+        return () => window.removeEventListener("mousemove", handleMouseMove);
+      }, []);
+
+      return (
+        <>
+          {sparkles.map((s) => (
+            <div
+              key={s.id}
+              className="fixed pointer-events-none text-pink-200 z-50 text-xl animate-sparkle"
+              style={{ left: s.x, top: s.y }}
+            >
+              ✨
+            </div>
+          ))}
+        </>
+      );
+    };
+
+    const CuteButton = ({ onClick, children, className = "" }) => (
+      <button
+        onClick={onClick}
+        className={`bg-gradient-to-r from-pink-400 to-rose-300 text-white font-bold py-4 px-10 rounded-full 
+        shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 ${className}`}
+      >
+        {children}
+      </button>
+    );
+
+    function GirlyWelcomePage() {
+      const [showWelcome, setShowWelcome] = useState(true);
+      const [fadeOut, setFadeOut] = useState(false);
+      const [fadeIn, setFadeIn] = useState(false);
+      
+      const messageData = {
+        content: "Ab to Meri Reels Dekh le Meri Maa 😭😢"
+      };
+
+      const handleOpenGift = () => {
+        setFadeOut(true);
+        setTimeout(() => {
+          setShowWelcome(false);
+          setFadeOut(false);
+          setFadeIn(true);
+          setTimeout(() => setFadeIn(false), 500);
+        }, 500);
+      };
+
+      const handleGoBack = () => {
+        setFadeOut(true);
+        setTimeout(() => {
+          setShowWelcome(true);
+          setFadeOut(false);
+          setFadeIn(true);
+          setTimeout(() => setFadeIn(false), 500);
+        }, 500);
+      };
+
+      const renderMessageContent = () => {
+        const content = messageData.content;
+
+        return (
+          <div className="space-y-4 mt-12">
+            <p className="text-4xl md:text-6xl font-bold text-pink-500 leading-tight">
+              {content}
+            </p>
+          </div>
+        );
+      };
+
+      return (
+        <div className="min-h-screen w-full bg-gradient-to-br from-pink-100 via-pink-50 to-rose-100 relative flex items-center justify-center p-4 overflow-hidden">
+          <FloatingBackground />
+          <SparkleEffect />
+
+          {showWelcome ? (
+            <div
+              className={`bg-white/90 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-2xl border-4 border-pink-200 w-full max-w-2xl text-center z-10 ${fadeOut ? 'fade-out' : ''} ${fadeIn ? 'fade-in' : ''}`}
+            >
+              <h1 className="text-6xl md:text-7xl font-bold text-pink-500 mb-4 drop-shadow-sm">
+                Welcome 💖
+              </h1>
+              <p className="text-2xl md:text-3xl font-medium text-pink-400 mb-8">
+                A Special Gift for you
+              </p>
+              <div className="flex justify-center">
+                <CuteButton onClick={handleOpenGift}>
+                  Open 🎁
+                </CuteButton>
+              </div>
+            </div>
+          ) : (
+            <div
+              className={`bg-white/90 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-2xl border-4 border-pink-200 w-full max-w-4xl text-center z-10 ${fadeOut ? 'fade-out' : ''} ${fadeIn ? 'fade-in' : ''}`}
+            >
+              <div className="text-6xl mb-6">🎀</div>
+              {renderMessageContent()}
+              <div className="text-4xl mt-8">✨</div>
+              
+              <div className="flex justify-center mt-10">
+                <CuteButton 
+                  onClick={handleGoBack}
+                  className="text-lg px-8 py-3"
+                >
+                  Go Back 🌺
+                </CuteButton>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.render(<GirlyWelcomePage />, document.getElementById('root'));
+  </script>
+</body>
+</html>
